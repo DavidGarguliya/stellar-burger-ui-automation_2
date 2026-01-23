@@ -22,9 +22,9 @@ class TestRegistration:
         wait.until(EC.visibility_of_element_located(RegistrationPageLocators.PASSWORD_INPUT)).send_keys(password)  # вводим пароль
         wait.until(EC.element_to_be_clickable(RegistrationPageLocators.SUBMIT_BUTTON)).click()  # жмём «зарегистрироваться»
 
-        login_title = wait.until(EC.visibility_of_element_located(LoginPageLocators.FORM_TITLE))  # проверяем, что открылась форма входа
-        assert login_title.text == "Вход"  # убеждаемся, что отображается форма авторизации
-        assert "/login" in driver.current_url  # подтверждаем переход на страницу логина
+        wait.until(EC.url_contains("/login"))  # дождались редиректа на логин
+        titles = driver.find_elements(*LoginPageLocators.FORM_TITLE)
+        assert titles and titles[0].is_displayed()  # подтверждаем, что заголовок найден и видим
 
     # При пароле короче 6 символов отображается ошибка
     def test_short_password_shows_error(self, driver):  

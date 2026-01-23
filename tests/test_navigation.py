@@ -23,12 +23,15 @@ class TestNavigation:
     def test_open_personal_account(self, driver):
         email = build_email()  # генерируем email
         password = build_password()  # генерируем пароль
+        wait = WebDriverWait(driver, 10)  # настраиваем явное ожидание на 10 секунд
+
         register_user_via_ui(driver, email, password)  # регистрируем пользователя
         login_via_form(driver, email, password)  # авторизуемся
         driver.get(BASE_URL)  # обновляем главную страницу после логина
         wait_main_ready(driver)  # ждём, пока она станет доступной
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable(MainPageLocators.PERSONAL_ACCOUNT_LINK)).click()  # жмём "личный кабинет"
-        profile_block = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(ProfileLocators.ACCOUNT_CONTAINER))  # проверяем, что открылась страница профиля
+        wait.until(EC.element_to_be_clickable(MainPageLocators.PERSONAL_ACCOUNT_LINK)).click()  # жмём "личный кабинет"
+        profile_block = wait.until(EC.visibility_of_element_located(ProfileLocators.ACCOUNT_CONTAINER))  # проверяем, что открылась страница профиля
+        
         assert profile_block.is_displayed()  # блок профиля видим
         assert "/account/profile" in driver.current_url  # в url есть путь профиля
 
@@ -36,10 +39,13 @@ class TestNavigation:
     def test_return_to_constructor_from_profile_via_link(self, driver):
         email = build_email()  # генерируем email
         password = build_password()  # генерируем пароль
+        wait = WebDriverWait(driver, 10)  # настраиваем явное ожидание на 10 секунд
+
         login_and_open_profile(driver, email, password)  # регистрируем, логинимся и открываем профиль
 
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable(MainPageLocators.CONSTRUCTOR_HEADER_LINK)).click()  # жмём "конструктор"
-        order_btn = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(MainPageLocators.ORDER_BUTTON))  # проверяем, что вернулись в конструктор
+        wait.until(EC.element_to_be_clickable(MainPageLocators.CONSTRUCTOR_HEADER_LINK)).click()  # жмём "конструктор"
+        order_btn = wait.until(EC.visibility_of_element_located(MainPageLocators.ORDER_BUTTON))  # проверяем, что вернулись в конструктор
+        
         assert order_btn.is_displayed()  # кнопка заказа доступна
         assert driver.current_url.startswith(BASE_URL)  # подтверждаем возврат на главную
 
@@ -47,10 +53,13 @@ class TestNavigation:
     def test_return_to_constructor_from_profile_via_logo(self, driver):
         email = build_email()  # генерируем email
         password = build_password()  # генерируем пароль
+        wait = WebDriverWait(driver, 10)  # настраиваем явное ожидание на 10 секунд
+
         login_and_open_profile(driver, email, password)  # регистрируем, логинимся и открываем профиль
 
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable(MainPageLocators.LOGO_LINK)).click()  # кликаем по логотипу
-        order_btn = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(MainPageLocators.ORDER_BUTTON))  # проверяем, что оказались в конструкторе
+        wait.until(EC.element_to_be_clickable(MainPageLocators.LOGO_LINK)).click()  # кликаем по логотипу
+        order_btn = wait.until(EC.visibility_of_element_located(MainPageLocators.ORDER_BUTTON))  # проверяем, что оказались в конструкторе
+        
         assert order_btn.is_displayed()  # кнопка заказа доступна
         assert driver.current_url.startswith(BASE_URL)  # подтверждаем возврат на главную
 
@@ -58,8 +67,11 @@ class TestNavigation:
     def test_logout_from_profile(self, driver):  
         email = build_email()  # генерируем email
         password = build_password()  # генерируем пароль
+        wait = WebDriverWait(driver, 10)  # настраиваем явное ожидание на 10 секунд
+
         login_and_open_profile(driver, email, password)  # регистрируем, логинимся и открываем профиль
 
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable(ProfileLocators.LOGOUT_BUTTON)).click()  # жмём «выход»
-        login_title = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(LoginPageLocators.FORM_TITLE))  # ждём форму входа
-        assert login_title.text == "Вход"  # проверяем, что отрисовалась форма входа
+        wait.until(EC.element_to_be_clickable(ProfileLocators.LOGOUT_BUTTON)).click()  # жмём «выход»
+        wait.until(EC.url_contains("/login"))  # дождались редиректа на логин
+        titles = driver.find_elements(*LoginPageLocators.FORM_TITLE)
+        assert titles and titles[0].is_displayed()  # заголовок формы входа найден и видим

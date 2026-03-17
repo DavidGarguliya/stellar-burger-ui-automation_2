@@ -1,6 +1,6 @@
 # Stellar Burgers UI Autotests
 
-Набор UI-тестов для учебного сервиса Stellar Burgers (https://stellarburgers.education-services.ru/) на Python + Pytest + Selenium.
+Набор UI-тестов для сервиса Stellar Burgers (https://stellarburgers.education-services.ru/) на Python + Pytest + Selenium.
 
 ## Подготовка окружения
 - `python3 -m venv .venv && source .venv/bin/activate`

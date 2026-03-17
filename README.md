@@ -41,5 +41,3 @@
 - `test_switch_to_sauces_tab`: переход к разделу «Соусы».
 - `test_switch_to_fillings_tab`: переход к разделу «Начинки» 
 - `test_switch_to_buns_tab`: переход к разделу «Булки»
-
-# Sprint_5
